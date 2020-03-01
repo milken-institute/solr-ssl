@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  solr:
+    image: wodby/solr:$TAG
+    build: 
+      context: ./solr
+      args:
+        SOLR_VER: 8.4.1
+    container_name: "solr"
+    env_file:
+      - .env
+    networks:
+     - solr-network
+    expose:
+      - "8983"
+    ports:
+      - "8983:8983"
+
+  solr-proxy:
+    container_name: solr-nginx-proxy
+    build: solr-proxy
+    networks: 
+     - solr-network
+    environment:
+     - "SOLR_URL=http://solr:8983/solr/discovery"
+    ports:
+     - 8443:8443
+
+networks:
+  solr-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+        - subnet: "2001:3984:3989::/64"

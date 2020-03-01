@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  solr:
+    image: wodby/solr:$TAG
+    container_name: "custom_solr"
+    env_file:
+      - .env
+    expose:
+      - "8983"
+    ports:
+      - "8983:8983"
