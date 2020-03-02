@@ -36,3 +36,4 @@ if [[ "${1}" == 'make' ]]; then
 else
     exec docker-entrypoint.sh "$@"
 fi
+
