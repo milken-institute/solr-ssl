@@ -10,6 +10,10 @@ ENV SOLR_HEAP="1024m" \
 
 USER root
 
+RUN apk add --no-cache \
+          zip \
+          supervisor \
+
 COPY search-api-solr /tmp/search-api-solr
 COPY configsets /tmp/configsets
 
@@ -60,6 +64,14 @@ RUN set -ex; \
 
 COPY bin /usr/local/bin
 COPY entrypoint.sh /
+COPY configsets/_default /opt/solr/server/solr/stovak_dev
+RUN chmod -R 777 /opt/solr/server/solr/stovak_dev
+COPY configsets/_default /opt/solr/server/solr/milken_dev
+RUN chmod -R 777 /opt/solr/server/solr/milken_dev
+COPY configsets/_default /opt/solr/server/solr/milken_test
+RUN chmod -R 777 /opt/solr/server/solr/milken_test
+COPY configsets/_default /opt/solr/server/solr/milken_live
+RUN chmod -R 777 /opt/solr/server/solr/milken_live
 
 USER solr
 
