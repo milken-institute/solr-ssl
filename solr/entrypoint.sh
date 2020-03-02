@@ -14,8 +14,8 @@ migrate
 
 # Symlinks config sets to volume.
 for configset in $(ls -d /opt/docker-solr/configsets/*); do
-    if [[ ! -d "/opt/solr/server/solr/configsets/${configset##*/}" ]]; then
-        ln -s "${configset}" /opt/solr/server/solr/configsets/;
+    if [[ ! -d "/opt/solr/server/solr/configsets/${configset}/conf" ]]; then
+        cp -Rf "${configset}" /opt/solr/server/solr/configsets;
     fi
 done
 
@@ -36,3 +36,10 @@ if [[ "${1}" == 'make' ]]; then
 else
     exec docker-entrypoint.sh "$@"
 fi
+
+### one core/index per development environment
+make create core="milken-dev" host="${host}" -f /usr/local/bin/actions.mk
+make create core="milken-test" host="${host}" -f /usr/local/bin/actions.mk
+make create core="milken-live" host="${host}" -f /usr/local/bin/actions.mk
+make create core="stovak-dev" host="${host}" -f /usr/local/bin/actions.mk
+make create core="reapbooster-dev" host="${host}" -f /usr/local/bin/actions.mk
