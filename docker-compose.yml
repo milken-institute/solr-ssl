@@ -2,12 +2,12 @@ version: "3.7"
 
 services:
   solr:
-    image: wodby/solr:$TAG
+    container_name: "solr"
+    image: milken/solr
     build: 
       context: ./solr
       args:
         SOLR_VER: 8.4.1
-    container_name: "solr"
     env_file:
       - .env
     networks:
@@ -18,7 +18,8 @@ services:
       - "8983:8983"
 
   solr-proxy:
-    container_name: solr-nginx-proxy
+    container_name: solr-proxy
+    image: milken/solr-proxy
     build: solr-proxy
     networks: 
      - solr-network
@@ -26,6 +27,8 @@ services:
      - "SOLR_URL=http://solr:8983/solr/discovery"
     ports:
      - 8443:8443
+    depends_on:
+      - solr
 
 networks:
   solr-network:
