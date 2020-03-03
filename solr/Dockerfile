@@ -10,12 +10,10 @@ ENV SOLR_HEAP="1024m" \
 
 USER root
 
-RUN apk add --no-cache \
-          zip \
-          supervisor \
-
 COPY search-api-solr /tmp/search-api-solr
 COPY configsets /tmp/configsets
+COPY bin /usr/local/bin
+RUN ln -s /usr/local/bin/init_solr /docker-entrypoint-initdb.d
 
 RUN set -ex; \
     \
@@ -24,7 +22,9 @@ RUN set -ex; \
         curl \
         grep \
         make \
-        sudo; \
+        sudo \
+        supervisor \
+        zip; \
     \
     apk add --update --no-cache -t .solr-build-deps \
         jq \
@@ -63,20 +63,22 @@ RUN set -ex; \
         /var/cache/apk/*
 
 COPY bin /usr/local/bin
-COPY entrypoint.sh /
 COPY configsets/_default /opt/solr/server/solr/stovak_dev
-RUN chmod -R 777 /opt/solr/server/solr/stovak_dev
+RUN chmod -R 755 /opt/solr/server/solr/stovak_dev
 COPY configsets/_default /opt/solr/server/solr/milken_dev
-RUN chmod -R 777 /opt/solr/server/solr/milken_dev
+RUN chmod -R 755 /opt/solr/server/solr/milken_dev
 COPY configsets/_default /opt/solr/server/solr/milken_test
-RUN chmod -R 777 /opt/solr/server/solr/milken_test
+RUN chmod -R 755 /opt/solr/server/solr/milken_test
 COPY configsets/_default /opt/solr/server/solr/milken_live
-RUN chmod -R 777 /opt/solr/server/solr/milken_live
-
-USER solr
+RUN chmod -R 755 /opt/solr/server/solr/milken_live
+RUN chown -R solr.solr /opt/solr/server/solr
+RUN mkdir /etc/supervisor.d
+RUN mkdir -p /var/run
+RUN touch /var/run/supervisord.pid
+COPY supervisor.d/*.ini /etc/supervisor.d/
 
 VOLUME /opt/solr/server/solr
 WORKDIR /opt/solr/server/solr
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["solr-foreground"]
+
+CMD [ "/usr/bin/supervisord", "--nodaemon", "-e", "debug", "-c", "/etc/supervisord.conf" ]

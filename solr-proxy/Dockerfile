@@ -44,7 +44,7 @@ RUN apk add openssl; \
 
 EXPOSE 8483
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY milken.conf /etc/supervisor/conf.d/milken.conf
 
 STOPSIGNAL SIGTERM
 
