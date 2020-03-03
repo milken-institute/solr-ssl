@@ -26,9 +26,11 @@ jobs:
       - run:
           name: Build containers with docker-compose
           command: |
-            docker-compose up -d
+          docker ps -a
+          #  docker-compose up -d
       - run:
           name: Build on DigitalOcean
           command: |
+            ssh-keyscan -H milken-dev.reapbooster.com >> ~/.ssh/known_hosts \
             ssh circleci@milken-dev.reapbooster.com 'cd /home/circleci/solr-ssl && git pull'
 
