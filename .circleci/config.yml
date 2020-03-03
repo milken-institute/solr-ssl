@@ -20,6 +20,10 @@ jobs:
           paths:
             - /caches/app.tar
       - run:
+          name: Copy .env.dist to .env
+          command: |
+            cp .env.dist .env
+      - run:
           name: Build containers with docker-compose
           command: |
             docker-compose up -d
