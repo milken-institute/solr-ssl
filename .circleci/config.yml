@@ -27,7 +27,6 @@ jobs:
           name: Build containers with docker-compose
           command: |
           docker ps -a
-          #  docker-compose up -d
       - run:
           name: Build on DigitalOcean
           command: |
