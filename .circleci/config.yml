@@ -36,6 +36,10 @@ jobs:
           command: |
             ssh-keyscan -H milken-dev.reapbooster.com >> ~/.ssh/known_hosts 
       - run:
+          name: Print contents of known_hosts
+          command: |
+            cat ~/.ssh/known_hosts 
+      - run:
           name: Test commands over SSH to DO
           command: |
             ssh circleci@milken-dev.reapbooster.com 'pwd && whoami' 
