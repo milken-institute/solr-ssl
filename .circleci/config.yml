@@ -32,7 +32,9 @@ jobs:
           command: |
             echo "RIGHT BEFORE SSH" \
             echo $DOTest \
-            echo $DOP
+            echo $DOP \ 
+            apk add --no-cache sshpass
+
       - run:
           name: Add DO SSH Key-Sig to known_hosts
           command: |
@@ -44,13 +46,13 @@ jobs:
       - run:
           name: Test commands over SSH to DO
           command: |
-            echo $DOP | ssh circleci@milken-dev.reapbooster.com 'pwd && whoami' 
+            sshpass -p "$DOP" ssh circleci@milken-dev.reapbooster.com 'pwd && whoami'
       - run:
           name: Run uname on DigitalOcean
           command: |
-            echo $DOP | ssh circleci@milken-dev.reapbooster.com 'uname -a' 
+            sshpass -p "$DOP" ssh circleci@milken-dev.reapbooster.com 'uname -a' 
       - run:
           name: Build on DigitalOcean
           command: |
-            echo $DOP | ssh circleci@milken-dev.reapbooster.com 'cd /home/circleci/solr-ssl && git pull && cp .env.dist .env && docker-compose up -d --build'
+            sshpass -p "$DOP" ssh circleci@milken-dev.reapbooster.com 'cd /home/circleci/solr-ssl && git pull && cp .env.dist .env && docker-compose up -d --build'
 
