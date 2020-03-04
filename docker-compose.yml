@@ -2,14 +2,14 @@ version: "3.0"
 
 services:
   solr:
-    container_name: "solr"
+    container_name: "milkensolr-solr"
     image: milken/solr
     build: 
       context: ./solr
-      args:
-        SOLR_VER: 8.4.1
     env_file:
       - .env
+    environment:
+      - HOST=milkensolr-nginx
     networks:
      - solr-network
     expose:
@@ -18,15 +18,23 @@ services:
       - "8983:8983"
 
   solr-proxy:
-    container_name: solr-proxy
+    container_name: "milkensolr-nginx"
     image: milken/solr-proxy
-    build: solr-proxy
-    networks: 
-     - solr-network
+    build: ./solr-proxy
+    links:
+      - solr
+    networks:
+      - solr-network
+    external_links:
+      - solr-ssl_solr-network:php
     environment:
-     - "SOLR_URL=http://solr:8983/solr/discovery"
+     - "SOLR_URL=http://milkensolr-solr:8983/solr/discovery"
+     - HOST=milkensolr-nginx
+    expose:
+      - "8443"
+      - "8983"
     ports:
-     - 8443:8443
+      - "8443:8443"
     depends_on:
       - solr
 
