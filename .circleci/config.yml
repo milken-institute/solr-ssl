@@ -1,0 +1,42 @@
+version: 2
+jobs:
+  build:
+    working_directory: /solr-proxy
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --no-cache \
+              py-pip=9.0.0-r1
+            pip install \
+              docker-compose==1.12.0 
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Copy .env.dist to .env
+          command: |
+            cp .env.dist .env
+      - run:
+          name: Build containers with docker-compose
+          command: |
+            echo "docker-compose up -d --build should be here"
+      - run:
+          name: Install SSHPass
+          command: |
+            apk add --no-cache sshpass
+      - run:
+          name: Add SSH host signature to known_hosts
+          command: |
+            ssh-keyscan -H milken-dev.reapbooster.com >> ~/.ssh/known_hosts 
+      - run:
+          name: Build on DigitalOcean
+          command: |
+            sshpass -p "$DOP" ssh circleci@milken-dev.reapbooster.com 'cd /home/circleci/solr-ssl && git pull && cp .env.dist .env && docker-compose down && docker system prune --all --force && docker-compose up -d'
+
