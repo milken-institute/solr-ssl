@@ -25,9 +25,14 @@ RUN apt-get update -y --fix-missing && apt-get install -y \
       gnupg2 \
       google-chrome-stable
 
-COPY cert.pem /etc/ssl/certs/reapbooster-cert.pem
-COPY privkey.pem /etc/ssl/private/reapbooster-privkey.pem
+# copy operations must copy at least one file
+# optionally copy the live certs if they exist
+ADD ./dummy.txt cert.* /etc/ssl/certs/
+ADD ./dummy.txt privkey.* /etc/ssl/private/
+# the entryfile will rename them correctly
 
+
+RUN cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.dist
 COPY solr-proxy.conf /etc/nginx/conf.d/default.conf
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
