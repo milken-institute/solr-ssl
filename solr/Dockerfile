@@ -17,7 +17,7 @@ RUN mkdir -p /opt/solr/server/solr/mycores/milken/data
 RUN chmod -R 777 /opt/solr/server/solr/mycores/milken
 RUN mkdir -p /opt/solr/server/solr/configsets/_default/conf
 
-COPY ./configsets/* /opt/solr/server/solr/configsets/_default/conf/
+COPY ./configsets/conf/* /opt/solr/server/solr/configsets/_default/conf/
 COPY bin/init_solr /docker-entrypoint-initdb.d/
 COPY bin/actions.mk /usr/local/bin/actions.mk
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
