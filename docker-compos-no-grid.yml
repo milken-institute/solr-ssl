@@ -29,7 +29,7 @@ services:
       - solr-ssl_solr-network:php
     environment:
      - "SOLR_URL=http://milkensolr-solr:8983/solr/discovery"
-     - "HOST=milkensolr-nginx"
+     - HOST=milkensolr-nginx
     expose:
       - "8443"
       - "8983"
@@ -37,21 +37,6 @@ services:
       - "8443:8443"
     depends_on:
       - solr
-      - milkensolr-events-api
-
-  events-api:
-    container_name: "milkensolr-events-api"
-    image: milken/events-api:latest
-    networks:
-      - solr-network
-    expose:
-      - "9000"
-    env_file:
-      - .env
-    environment:
-      - "DATABASE_URL=sqlsrv://${GRID_MSSQL_USERNAME}:${GRID_MSSQL_PASSWORD}@${GRID_MSSQL_IP}:${GRID_MSSQL_PORT}/${GRID_MSSQL_DBNAME}?CharacterSet=UTF-8"
-      - "APP_ENV=prod"
-
 
 networks:
   solr-network:
