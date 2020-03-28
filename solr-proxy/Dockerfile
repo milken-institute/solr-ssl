@@ -53,6 +53,7 @@ RUN apk add openssl; \
 EXPOSE 8483
 
 COPY milken.conf /etc/supervisor/conf.d/milken.conf
+COPY fastcgi_params /etc/supervisor/fastcgi_params
 
 STOPSIGNAL SIGTERM
 
