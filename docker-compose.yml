@@ -37,7 +37,7 @@ services:
       - "8443:8443"
     depends_on:
       - solr
-      - milkensolr-events-api
+      - events-api
 
   events-api:
     container_name: "milkensolr-events-api"
