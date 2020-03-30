@@ -3,6 +3,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /tmp
 
+RUN mkdir -p /var/www/public;
+
 RUN apt-get update -y --fix-missing && apt-get install -y \
       gnupg2 \
       curl
@@ -23,7 +25,8 @@ RUN apt-get update -y --fix-missing && apt-get install -y \
       libxi6 \
       libgconf-2-4 \
       gnupg2 \
-      google-chrome-stable
+      google-chrome-stable \
+      iputils-ping
 
 # copy operations must copy at least one file
 # optionally copy the live certs if they exist
@@ -34,6 +37,8 @@ ADD ./dummy.txt privkey.* /etc/ssl/private/
 
 RUN cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.dist
 COPY solr-proxy.conf /etc/nginx/conf.d/default.conf
+COPY fastcgi_params /etc/nginx/fastcgi_params
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
@@ -53,7 +58,6 @@ RUN apk add openssl; \
 EXPOSE 8483
 
 COPY milken.conf /etc/supervisor/conf.d/milken.conf
-COPY fastcgi_params /etc/supervisor/fastcgi_params
 
 STOPSIGNAL SIGTERM
 
