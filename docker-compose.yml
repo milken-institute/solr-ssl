@@ -48,8 +48,8 @@ services:
       - "9000"
     env_file:
       - .env
+      - .env.local
     environment:
-      - "DATABASE_URL=sqlsrv://${GRID_MSSQL_USERNAME}:${GRID_MSSQL_PASSWORD}@${GRID_MSSQL_IP}:${GRID_MSSQL_PORT}/${GRID_MSSQL_DBNAME}?CharacterSet=UTF-8"
       - "APP_ENV=prod"
 
 
