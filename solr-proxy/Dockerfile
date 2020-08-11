@@ -36,6 +36,10 @@ ADD ./dummy.txt privkey.* /etc/ssl/private/
 
 
 RUN cp /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.dist
+
+COPY /etc/letsencrypt/live/milken-dev.reapbooster.com/cert.pem /etc/ssl/certs/nginx-selfsigned.crt
+COPY /etc/letsencrypt/live/milken-dev.reapbooster.com/privkey.pem /etc/ssl/private/nginx-selfsigned.key
+
 COPY solr-proxy.conf /etc/nginx/conf.d/default.conf
 COPY fastcgi_params /etc/nginx/fastcgi_params
 
